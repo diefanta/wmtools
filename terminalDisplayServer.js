@@ -17,7 +17,7 @@ var terminalServer = function(listen_addr, listen_port) {
     this.sql_conn = this.mysql.createConnection({
         host     : '192.168.2.100',
         user     : 'wmtools',
-        password : 'SJefhybCDqE7Ezd8',
+        password : '',
         database : 'wmtools'
     });
 
