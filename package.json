@@ -1,4 +1,22 @@
-"scripts": {
+{
+  "name": "ls",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
   "start": "node terminalDisplayServer.js"
 },
-"main": "terminalDisplayServer.js"
+"main": "terminalDisplayServer.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SvenKeutel/wmtools.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SvenKeutel/wmtools/issues"
+  },
+  "homepage": "https://github.com/SvenKeutel/wmtools"
+}
+
+
+
