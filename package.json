@@ -5,6 +5,10 @@
   "scripts": {
   "start": "node terminalDisplayServer.js"
 },
+"dependencies": {
+	  "nodejs-websocket" : "1.2.1",
+	  "mysql": "2.8.0"
+  },
 "main": "terminalDisplayServer.js",
   "repository": {
     "type": "git",
