@@ -1,0 +1,4 @@
+"scripts": {
+  "start": "node terminalDisplayServer.js"
+},
+"main": "terminalDisplayServer.js"
