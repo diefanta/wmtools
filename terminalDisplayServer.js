@@ -343,6 +343,11 @@ process.on('uncaughtException', function (er) {
 var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
+var express = require('express');
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 3002);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+ipaddress = app.get('ip')
+
 var DisplayServer = new terminalServer(ipaddress , port);
 DisplayServer.start();
 
