@@ -15,10 +15,11 @@ var terminalServer = function(listen_addr, listen_port) {
 
     console.log('Datenbankverbindung wird hergestellt');
     this.sql_conn = this.mysql.createConnection({
-        host     : '192.168.2.100',
-        user     : 'wmtools',
-        password : '',
-        database : 'wmtools'
+        host     : WM_MYSQL_HOST,
+	    port	 : WM_MYSQL_PORT,
+        user     : WM_MYSQL_USER,
+        password : WM_MYSQL_PASSWORD,
+        database : WM_MYSQL_DATABASE
     });
 
     this.debugCounter = 0;
@@ -52,7 +53,7 @@ var terminalServer = function(listen_addr, listen_port) {
             connection.close();
             return;
         }
-        //console.log('Neue Verbindung von Terminal '+terminal_id +' [Aktive Verbindungen: '+this.server.connections.length+'] prüfe Daten');
+        //console.log('Neue Verbindung von Terminal '+terminal_id +' [Aktive Verbindungen: '+this.server.connections.length+'] prÃ¼fe Daten');
 
         connection.terminal_id = terminal_id;
         connection.init_data_loaded = false;
@@ -76,7 +77,7 @@ var terminalServer = function(listen_addr, listen_port) {
                 connection.display_keyData = rows[0].dataKey;
                 connection.init_data_loaded = true;
                 connection.send_last_state = null;
-                me.log('Neue Verbindung von Terminal '+terminal_id +'[T:'+connection.display_typ+' Name:'+connection.display_name+'] [Aktive Verbindungen: '+me.server.connections.length+'] prüfe Daten');
+                me.log('Neue Verbindung von Terminal '+terminal_id +'[T:'+connection.display_typ+' Name:'+connection.display_name+'] [Aktive Verbindungen: '+me.server.connections.length+'] prÃ¼fe Daten');
                 if(connection.display_typ == "verladung") {
                     me.initialFirstTimeVerladung(connection, connection.display_keyData);
                 } else {
@@ -113,7 +114,7 @@ var terminalServer = function(listen_addr, listen_port) {
         var first_qry = "SELECT a.verladung_id, b.bemerkung, a.abzug, b.tor, b.hinweise FROM live_current_day a LEFT JOIN verladung b ON a.verladung_id=b.id LEFT JOIN terminal_tore c ON b.tor=c.id WHERE a.status='pending' AND c.nummer='"+tor+"' ORDER BY a.abzug LIMIT 1";
         this.sql_conn.query({sql:first_qry,typeCast: true}, function(err, rows, fields) {
             if(rows.length > 0) {
-                me.log('Habe Verladung ermittelt. Tor: '+tor+': '+rows[0].verladung_id);
+                //me.log('Tor: '+tor+': '+rows[0].verladung_id);
                 var Output = new Object();
                 Output.action = 'init';
                 Output.data = [
@@ -212,7 +213,7 @@ var terminalServer = function(listen_addr, listen_port) {
 
         qry += " FROM live_current_day a LEFT JOIN vkhs b ON a.vkh_id=b.id LEFT JOIN verladung c ON a.verladung_id=c.id LEFT JOIN terminal_tore d ON c.tor=d.id WHERE 1=1 "+qry_extend+" AND a.lastchange>'"+qry_data+"' ORDER BY a.abzug ASC";
         this.sql_conn.query({sql:qry,typeCast: true}, function(err, rows, fields) {
-            //console.log('Es wurden insgesamt '+rows.length+' geänderte Einträge gefunden. ['+qry_data+'] ('+qry+')');
+            //console.log('Es wurden insgesamt '+rows.length+' geÃ¤nderte EintrÃ¤ge gefunden. ['+qry_data+'] ('+qry+')');
             if(rows.length > 0) {
 
                 for(var i = 0; i < rows.length; i++) {
@@ -339,7 +340,10 @@ process.on('uncaughtException', function (er) {
     process.exit(1);
 });
 
-var DisplayServer = new terminalServer('192.168.2.100', 2601);
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+var DisplayServer = new terminalServer(ipaddress , port);
 DisplayServer.start();
 
 
@@ -348,25 +352,3 @@ setInterval(function() {
     DisplayServer.sendUpdatedData();
 }, 1000);
 
-
-/*
-
-var connection1 = mysql.createConnection({
-    host     : '192.168.2.100',
-    user     : 'wmtools',
-    password : '',
-    database : 'wmtools'
-});
-
-connection1.connect();
-
-connection1.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-    if (err) throw err;
-
-    console.log('The solution is: ', rows[0].solution);
-});
-
-connection1.end();
-
-*/
-//setInterval(function(){DisplayServer.broadcastTime();}, 1000);
